@@ -14,7 +14,15 @@ docker compose up -d --build
 ```
 Wait 1 minute for all services to be operational
 
-Send Curl to 127.0.0.1:9999/sign
+Send Curl
+
+```
+curl -v -X GET "127.0.0.1:9999/sign?message=helloworld" -d '{"webhookurl":"https://httpbin.org/post"}'
+
+curl -v -X GET "127.0.0.1:9999/verify?message=helloworld&signature=C5PMEP8AQVFhvppZflU3pEbmpEyRR4VRihZR1sGkFjWz_mQv9lkDnp8Gdffi_IFDX9HnYfrkX6ms-HCAAcaftpNghbwvCEMzM1f9284tsgm0axzHnIpnEEhH_FFg1-LDB_sVNxAZ2UTCUq7bN5GcCB1o7dOz70WYa4AFz39PHNmrHjJXrXXJYDXmJUJs1NlfFJnFRGMEmeRegGuXa9sfPQhsJNetuhx_5O4sXHcEqDkhOYozTXb2806m_545Mh6Nlm5S-KTkYS96ATPFEmhrb6ELKN5AUeLCR5Hjreg54fo1nTSGpvDA6Xs-U8AA0o2XUONw0ov4XFEgXQwENnw4rQ==" -d '{"webhookurl":"https://httpbin.org/post"}'
+
+
+```
 
 View Workflow Status UI: 127.0.0.1:8080
 

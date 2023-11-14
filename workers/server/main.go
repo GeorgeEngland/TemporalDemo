@@ -58,6 +58,7 @@ type WebhookPayload struct {
 func signHandler(ctx context.Context, c *client.Client, w http.ResponseWriter, r *http.Request) {
 	signParams, err := parseSignRequest(w, r)
 	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
@@ -92,6 +93,7 @@ func signHandler(ctx context.Context, c *client.Client, w http.ResponseWriter, r
 func verifyHandler(ctx context.Context, c *client.Client, w http.ResponseWriter, r *http.Request) {
 	verifyParams, err := parseVerifyRequest(w, r)
 	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
@@ -135,13 +137,14 @@ func parseSignRequest(w http.ResponseWriter, r *http.Request) (*hadrian.SignWork
 
 	has := params.Has("message")
 	if !has {
-		w.Write([]byte(MISSING_MESSAGE_RESPONSE))
 		w.WriteHeader(400)
+		w.Write([]byte(MISSING_MESSAGE_RESPONSE))
 		return nil, errors.New("missing message")
 	}
 
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
+		w.WriteHeader(400)
 		http.Error(w, "Error reading request body", http.StatusInternalServerError)
 		return nil, err
 	}
@@ -149,6 +152,7 @@ func parseSignRequest(w http.ResponseWriter, r *http.Request) (*hadrian.SignWork
 	if len(body) > 0 {
 		err = json.Unmarshal(body, &payload)
 		if err != nil {
+			w.WriteHeader(400)
 			http.Error(w, "Error decoding JSON body", http.StatusBadRequest)
 			return nil, err
 		}
@@ -168,20 +172,21 @@ func parseVerifyRequest(w http.ResponseWriter, r *http.Request) (*hadrian.Verify
 
 	has := params.Has("message")
 	if !has {
+		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(MISSING_MESSAGE_RESPONSE))
-		w.WriteHeader(400)
 		return nil, errors.New("missing message")
 	}
 
 	has = params.Has("signature")
 	if !has {
+		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(MISSING_SIGNATURE_RESPONSE))
-		w.WriteHeader(400)
 		return nil, errors.New("missing signature")
 	}
 
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
 		http.Error(w, "Error reading request body", http.StatusInternalServerError)
 		return nil, err
 	}
@@ -189,6 +194,7 @@ func parseVerifyRequest(w http.ResponseWriter, r *http.Request) (*hadrian.Verify
 	if len(body) > 0 {
 		err = json.Unmarshal(body, &payload)
 		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
 			http.Error(w, "Error decoding JSON body", http.StatusBadRequest)
 			return nil, err
 		}
