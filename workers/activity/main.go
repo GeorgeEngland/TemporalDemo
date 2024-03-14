@@ -16,10 +16,10 @@ func main() {
 	}
 	defer c.Close()
 
-	// This worker hosts both Workflow and Activity functions
-	w := worker.New(c, hadrian.CryptoSignTaskQueue, worker.Options{TaskQueueActivitiesPerSecond: .1})
-	w.RegisterActivity(hadrian.UnreliableSignActivity)
-	w.RegisterActivity(hadrian.UnreliableVerifyActivity)
+	// This worker hosts Activity functions
+	// Limits per task queue basis. WorkerActivityTasksPerSecond limits per worker
+	w := worker.New(c, hadrian.UnreliableActivityTaskQueue, worker.Options{WorkerActivitiesPerSecond: 1})
+	w.RegisterActivity(hadrian.UnreliableActivity)
 
 	// Start listening to the Task Queue
 	err = w.Run(worker.InterruptCh())
@@ -28,3 +28,5 @@ func main() {
 		log.Fatalln("unable to start Worker", err)
 	}
 }
+
+// TaskQueueActivitiesPerSecond: 1, WorkerActivitiesPerSecond: .1

@@ -16,11 +16,9 @@ func main() {
 	}
 	defer c.Close()
 
-	// This worker hosts both Workflow and Activity functions
-	w := worker.New(c, hadrian.CryptoTaskQueue, worker.Options{})
-	w.RegisterWorkflow(hadrian.SignWorkFlow)
-	w.RegisterWorkflow(hadrian.VerifyWorkflow)
-	w.RegisterActivity(hadrian.SendPostHookActivity)
+	// This worker hosts Workflow functions
+	w := worker.New(c, hadrian.WorkflowTaskQueue, worker.Options{})
+	w.RegisterWorkflow(hadrian.DeterministicWorkflow)
 	// Start listening to the Task Queue
 	err = w.Run(worker.InterruptCh())
 

@@ -12,8 +12,6 @@ services:
     networks:
       - temporal-network
     restart: on-failure
-    environment:
-      - APIKEY=
     ports:
       - 9999:9999
 
@@ -35,6 +33,9 @@ services:
     networks:
       - temporal-network
     restart: on-failure
+    deploy:
+      mode: replicated
+      replicas: 3
   elasticsearch:
     container_name: temporal-elasticsearch
     environment:
