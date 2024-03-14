@@ -26,7 +26,7 @@ Params: None
 
 Body (not required): None
 
-### GET /verify
+### GET /start
 
 Params: None
 
